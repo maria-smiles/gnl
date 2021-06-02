@@ -1,0 +1,1 @@
+some letters\n\0

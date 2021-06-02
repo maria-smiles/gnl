@@ -1,7 +1,6 @@
 //
-// Created by Leann Alaskan on 5/25/21.
+// Created by HardWorker on 01.06.2021.
 //
-
 #include "get_next_line.h"
 
 size_t	ft_strlen(const char *str)
@@ -12,6 +11,22 @@ size_t	ft_strlen(const char *str)
 	while (str[i])
 		i++;
 	return (i);
+}
+
+char	*ft_strchr(const char *str, int c)
+{
+	size_t	len;
+	size_t	i;
+
+	len = ft_strlen(str);
+	i = 0;
+	while (i <= len)
+	{
+		if (str[i] == (char) c)
+			return ((char *) &str[i]);
+		i++;
+	}
+	return (NULL);
 }
 
 static char *ft_newstr(char	*new_s, char const *s1, char const *s2)
@@ -49,6 +64,57 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	new_s = NULL;
 	new_s = ft_newstr(new_s, s1, s2);
 	return (new_s);
+}
+
+void	ft_strcpy(char *dst, const char *src)
+{
+	size_t	i;
+	size_t	lensrc;
+	size_t	dstsize;
+
+	if (!dst || !src)
+		return;
+	lensrc = ft_strlen(src);
+	if (lensrc == 0)
+	{
+		dst[0] = '\0';
+		return;
+	}
+	dstsize = ft_strlen(dst);
+	if (dstsize >= lensrc)
+	{
+		i = 0;
+		while ((i < dstsize) && (src[i] != '\0'))
+		{
+			dst[i] = src[i];
+			i++;
+		}
+		dst[i] = '\0';
+	}
+}
+void ft_strclr(char *reminder)
+{
+	size_t i;
+	size_t len;
+
+	i = 0;
+	len = ft_strlen(reminder);
+	while(i < len)
+	{
+		reminder[i] = '\0';
+		i++;
+	}
+}
+
+char *ft_clrnew(size_t count)
+{
+	char *line;
+
+	line = malloc(sizeof(char) * (count + 1));
+	if(!line)
+		return (NULL);
+	ft_strclr(line);
+	return (line);
 }
 
 char	*ft_strdup(const char *s1)

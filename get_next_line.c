@@ -1,58 +1,63 @@
 //
-// Created by Leann Alaskan on 5/25/21.
+// Created by HardWorker on 01.06.2021.
 //
 #include "get_next_line.h"
+#include <stdio.h>
+#include <fcntl.h>
 
-char **ft_copy_n_char(char **line, char *buf, int i);
-void ft_new_size(char *str1, char *str2);
-int	read_from_fd(int fd, char *buf)
+char *check_ost(char *ost, char **line)
 {
-	int		rs;
-	//size_t	BUFFER_SIZE = 1;
-	rs = 0;
-	rs = read(fd, buf, BUFFER_SIZE);
-	//if read error
-	//return (-1);
-	buf[rs] = '\0';
-	return (1);
-}
-int get_next_line(int fd, char **line)
-{
-	char	*buf;
-	int		i;
+	char *p_n;
 
-	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buf)
-		return (-1);
-	if (read_from_fd(fd, buf))
+	p_n = NULL;
+	if (ost)
 	{
-		//find \n
-		while (buf[i] != '\n' || buf[i] != '\0')
-			i++;
-		if (i < ft_strlen(buf))
-			line = ft_copy_n_char(line, buf, i);
+		if ((p_n = ft_strchr(ost, '\n')))
+		{
+			*p_n = '\0';
+			*line = ft_strdup(ost);
+			ft_strcpy(ost, ++p_n);
+		}
 		else
-			ft_new_size(str1, str2);
-
+		{
+			*line = ft_strdup(ost);
+			ft_strclr(ost); //что она чистит?!
+		}
 	}
 	else
+	{
+		*line = ft_clrnew(1);//ft_strnew аллоцирует переданное кол-во памяти и
+		// заполняет нулями
+	}
+	return (p_n);
+}
+
+int get_next_line(int fd, char **line)///1, 0, -1
+{
+	char buf[BUFFER_SIZE + 1];
+	int byte;
+	char *p_n;
+	static char *ost;
+	char *tmp;
+
+	p_n = check_ost(ost, line);
+	while(!p_n && (byte = read(fd, buf, BUFFER_SIZE)))
+	{
+		buf[byte] = '\0';
+		if((p_n = ft_strchr(buf, '\n')))
+		{
+			*p_n = '\0';
+			p_n++;
+			ost = ft_strdup(p_n);
+		}
+		tmp = *line;
+		*line = ft_strjoin(*line, buf);
+		free(tmp);
+	}
+	if (byte == -1)
 		return (-1);
-
-}
-char **ft_copy_n_char(char **line, char *buf, int i)
-{
-	static char *liner;
-	char *bufr;
-
-	bufr = ft_strdup(buf);
-	bufr[i] = '\0';
-	liner = malloc(sizeof(char) * (ft_strlen(*line) + i));
-	liner = (ft_strjoin(*line, bufr);
-	free(bufr);
-	free(line)
-	return (&liner);
-}
-void ft_new_size(char *str1, char *str2)
-{
-
+	else if (byte != 0 || ft_strlen(ost) != 0 || ft_strlen(*line) != 0)
+		return (1);
+	else
+		return (0);
 }
